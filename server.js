@@ -1,3 +1,5 @@
+import 'idempotent-babel-polyfill';
+
 import { createServer } from 'http';
 
 import BitScoop from 'bitscoop-sdk';
@@ -13,15 +15,14 @@ import { PubSub } from 'graphql-subscriptions';
 import { execute, subscribe } from 'graphql';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 import mongoose from 'mongoose';
-import {Nuxt, Builder} from 'nuxt';
 
 import views from './lib/views';
 import cookieAuthorization from './lib/middleware/cookie-authorization';
+import keyAuthorization from './lib/middleware/key-authorization';
 import wsCookieAuthorization from './lib/middleware/ws-cookie-authorization';
 import meta from './lib/middleware/meta';
 import {crudAPI} from './schema';
 import {loadValidator} from './lib/validator';
-import nuxtConfig from './nuxt.config.js';
 
 const BITSCOOP_API_KEY = config.bitscoop.api_key;
 const MONGODB_URI = config.mongodb.address;
@@ -41,9 +42,7 @@ const opts = {
 	reconnectInterval: 1000,
 };
 
-const bitscoop = new BitScoop(BITSCOOP_API_KEY, {
-	allowUnauthorized: true
-});
+const bitscoop = new BitScoop(BITSCOOP_API_KEY, config.bitscoop.arguments);
 
 server.use(cors({
 	origin: config.cors.address,
@@ -80,6 +79,7 @@ loadValidator(config.validationSchemas)
 			crudAPI.uri,
 			bodyParser.json(),
 			cookieParser(),
+			keyAuthorization,
 			cookieAuthorization,
 			graphqlExpress((req, res) => ({
 				schema: crudAPI.schema,
@@ -115,7 +115,7 @@ loadValidator(config.validationSchemas)
 
 		server.listen(httpListenPort);
 
-		console.log('Lifescope API listening on: ' + httpListenPort);
+		console.log('Lifescope API listening on: ' + httpListenPort + ' at ' + new Date());
 
 		wsServer.listen(wsListenPort, function() {
 			console.log('WS Server running on ' + wsListenPort);

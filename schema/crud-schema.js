@@ -87,6 +87,8 @@ GQC.rootQuery().addFields({
 	  searchOne: SearchTC.getResolver('findOne'),
 
 	  tagMany: TagTC.getResolver('findMany'),
+
+	  userOne: UserTC.getResolver('findOne'),
   }),
 //   sessionTotal: SessionTC.getResolver('count'),
 //   sessionConnection: SessionTC.getResolver('connection'),
@@ -142,9 +144,11 @@ GQC.rootMutation().addFields({
         connectionPatch: ConnectionTC.getResolver('patchConnection'),
         connectionEliminate: ConnectionTC.getResolver('eliminateConnection'),
 
+	    contactSearch: ContactTC.getResolver('searchContacts'),
 	    tagContact: ContactTC.getResolver('addContactTags'),
 	    untagContact: ContactTC.getResolver('removeContactTags'),
 
+	    contentSearch: ContentTC.getResolver('searchContent'),
 	    tagContent: ContentTC.getResolver('addContentTags'),
 	    untagContent: ContentTC.getResolver('removeContentTags'),
 
@@ -157,6 +161,8 @@ GQC.rootMutation().addFields({
 	    searchFind: SearchTC.getResolver('findSearch'),
 	    searchPatch: SearchTC.getResolver('patchSearch'),
 	    searchUpsert: SearchTC.getResolver('upsertSearch'),
+
+	    userApiKeyUpdate: UserTC.getResolver('updateApiKey'),
     }),
 //   eventCreate: EventTC.getResolver('createOne'),
 //   eventUpdateOne: EventTC.getResolver('updateOne'),
